@@ -5,7 +5,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 
 type Params = {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 };
 
 export async function generateStaticParams() {
@@ -14,7 +14,9 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: Params) {
-  const product = await getProductById(params.id);
+  const { id } = await params;
+
+  const product = await getProductById(id);
   if (!product) return {};
 
   return {
@@ -28,7 +30,9 @@ export async function generateMetadata({ params }: Params) {
 }
 
 export default async function ProductPage({ params }: Params) {
-  const product = await getProductById(params.id);
+  const { id } = await params;
+
+  const product = await getProductById(id);
 
   if (!product) return notFound();
 
